@@ -65,17 +65,19 @@ while True:
         (x, y, w, h) = [v * size for v in face_i]
         face = gray[y:y + h, x:x + w]
         face_resize = cv2.resize(face, (im_width, im_height))
-
+        start =(x, y)
+        end =(x + w, y + h)
         # Try to recognize the face
         prediction = model.predict(face_resize)
-        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 3)
+        cv2.rectangle(frame,start , end, (0, 255, 0), 3)
+        cv2.rectangle(frame, (start[0],start[1]-20), (start[0]+120,start[1]), (0, 255, 255), -3)
 
-        if prediction[0]<90:
-            cv2.putText(frame,'%s - %.0f' % (names[prediction[0]],prediction[1]),(x-10, y-10), cv2.FONT_HERSHEY_PLAIN,2,(255, 0, 0),thickness=3,)
+        if prediction[1]<90:
+            cv2.putText(frame,'%s - %.0f' % (names[prediction[0]],prediction[1]),(x+5, y-5), cv2.FONT_HERSHEY_SIMPLEX,0.6,(0, 0, 0),thickness=2,)
             print('%s - %.0f' % (names[prediction[0]],prediction[1]))
         else:
             cv2.putText(frame,'not recognized',(x-10, y-10), cv2.FONT_HERSHEY_PLAIN,1,(0, 0, 255))
-
+        
     # Show the image and check for "q" being pressed
     cv2.imshow('Detection', frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
